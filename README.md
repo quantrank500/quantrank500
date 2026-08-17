@@ -1,5 +1,7 @@
 # QuantRank500
 
+[![tests](https://github.com/quantrank500/quantrank500/actions/workflows/tests.yml/badge.svg)](https://github.com/quantrank500/quantrank500/actions/workflows/tests.yml)
+
 **A public record of stock predictions, settled by the market itself.**
 
 Live at [quantrank500.com](https://quantrank500.com) ·
