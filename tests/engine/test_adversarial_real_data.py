@@ -34,7 +34,11 @@ def source():
         lake = LocalLakeSource()
     except psycopg.OperationalError:
         pytest.skip("local Postgres not available")
-    if len(lake.calendar()) < 50:
+    try:
+        loaded = len(lake.calendar()) >= 50
+    except psycopg.errors.UndefinedTable:  # Postgres exists, lake schema doesn't (CI)
+        loaded = False
+    if not loaded:
         pytest.skip("lake copy not loaded")
     yield lake
     lake.close()
