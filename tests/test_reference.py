@@ -7,7 +7,6 @@ from zoneinfo import ZoneInfo
 
 import psycopg
 import pytest
-from tests.test_databento_ingest import record
 
 from quantrank500.config import APP_DSN
 from quantrank500.market_data.local_lake import LAKE_SCHEMA
@@ -21,6 +20,20 @@ from quantrank500.market_data.reference import (
 
 ET = ZoneInfo("America/New_York")
 MON, TUE = date(2026, 8, 10), date(2026, 8, 11)
+
+
+def record(wall_et: datetime, o="10.0", h="10.5", lo="9.5", c="10.2", vol=100):
+    """A DBN-shaped ohlcv record for the given ET wall-clock time."""
+    from datetime import UTC
+    from types import SimpleNamespace
+
+    ts_utc = wall_et.replace(tzinfo=ET).astimezone(UTC)
+    scale = lambda p: int(Decimal(p) * 10**9)  # noqa: E731
+    return SimpleNamespace(
+        ts_event=int(ts_utc.timestamp() * 1_000_000_000),
+        open=scale(o), high=scale(h), low=scale(lo), close=scale(c),
+        volume=vol,
+    )
 
 
 def ref(close="10.00", volume=500_000, session=MON) -> Reference:
