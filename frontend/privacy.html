@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Privacy</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Privacy">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main" class="ruled">
+  <h1>Privacy</h1>
+  <p class="note">This page is short because there is little to disclose. That is the point.</p>
+
+  <h2>What we collect</h2>
+  <p>
+    Anonymous, cookieless page statistics: page views, referrers, and
+    country-level location, via Cloudflare Web Analytics and a self-hosted
+    umami instance. No cookies are set, no identifiers are stored, no
+    individual visitor is tracked, and nothing is shared with advertisers.
+    The umami counts are themselves public —
+    <a id="traffic-link"
+       href="https://analytics.quantrank500.com/share/qr500demo/demo.quantrank500.com">anyone
+    can open the dashboard</a>: the platform that publishes its ledger
+    publishes its traffic.
+  </p>
+
+  <h2>What we never collect</h2>
+  <p>
+    No accounts, no emails, no names, no phone numbers, no payment details.
+    Your ledger identity is a random UUID plus a secret key that exists only in
+    your own browser — the platform cannot connect it to you.
+  </p>
+
+  <h2>What you publish</h2>
+  <p>
+    Predictions and their settlements are the product: public, permanent, and
+    exportable by anyone under Creative Commons Zero (CC0) — a public-domain
+    dedication with no rights reserved. Post nothing you want private. An
+    optional display name is public by definition.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions: <a href="mailto:hello@quantrank500.com">hello@quantrank500.com</a>.
+    Security reports: <a href="mailto:security@quantrank500.com">security@quantrank500.com</a>
+    or GitHub's private vulnerability reporting.
+  </p>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+// this page serves every host; point the dashboard link at this host's share
+if (TRAFFIC_URL) document.getElementById("traffic-link").href = TRAFFIC_URL;
+
+getJson("/scoreboard")
+  .then(board => renderFreshness(document.getElementById("freshness"), board.freshness))
+  .catch(() => {});
+</script>
+</body>
+</html>

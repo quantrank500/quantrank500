@@ -1,0 +1,51 @@
+# Four containers, one command: docker compose up (spec §10).
+# Home PC first; no market-hours uptime requirement; missed nights self-heal.
+services:
+  db:
+    image: postgres:16
+    container_name: quantrank500-db
+    environment:
+      POSTGRES_USER: quantrank
+      POSTGRES_PASSWORD: quantrank   # local dev only; never exposed off-machine
+      POSTGRES_DB: quantrank500
+    ports:
+      - "5432:5432"                  # published for host-side scripts and tests
+    volumes:
+      - quantrank500-pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: quantrank500-api
+    environment:
+      QR500_ENV: ${QR500_ENV:-dev}
+      QR500_PG_DSN: postgresql://quantrank:quantrank@db:5432/${QR500_DB:-quantrank500}
+      QR500_LAKE_DSN: postgresql://quantrank:quantrank@db:5432/quantrank500
+      QR500_API_HOST: 0.0.0.0
+    depends_on:
+      - db
+
+  worker:
+    build: .
+    container_name: quantrank500-worker
+    command: ["python", "scripts/run_worker.py"]
+    environment:
+      QR500_ENV: ${QR500_ENV:-dev}
+      QR500_PG_DSN: postgresql://quantrank:quantrank@db:5432/${QR500_DB:-quantrank500}
+      QR500_LAKE_DSN: postgresql://quantrank:quantrank@db:5432/quantrank500
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: quantrank500-nginx
+    ports:
+      - "8000:8000"                  # rate-limited API proxy
+      - "8080:8080"                  # static frontend
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+
+volumes:
+  quantrank500-pgdata:

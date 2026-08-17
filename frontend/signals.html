@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Today's Signals</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Today's Signals">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main">
+  <h1>Today's Signals</h1>
+  <p class="note"><strong>A record of predictions, not investment advice.</strong></p>
+  <p class="note">
+    Before 9:30 AM ET a prediction shows only its commitment hash — content
+    unreadable, provably locked. At 9:30 the payload is revealed; anyone can
+    recompute the hash and check it against the pre-open commitment.
+  </p>
+  <p class="note divided" id="freshness-top"></p>
+
+  <label for="session">Session</label>
+  <input id="session" type="date">
+
+  <div id="signals"></div>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+async function loadSignals(sessionDate) {
+  const container = document.getElementById("signals");
+  try {
+    const rows = await getJson(`/predictions?session_date=${sessionDate}`);
+    if (rows.length === 0) {
+      container.innerHTML = `<p class="note">No predictions for ${sessionDate}.</p>`;
+      return;
+    }
+    const body = rows.map(row => row.revealed
+      ? `<tr>
+           <td>${identityLabel(row.identity_id, row.display_name)}</td>
+           <td>${row.ticker}</td>
+           <td class="num">${row.entry_price}</td><td class="num">${row.stop_loss}</td><td class="num">${row.target_price}</td>
+           <td>${row.status}</td>
+           <td class="mono" title="commitment">${row.commitment.slice(0, 12)}…</td>
+         </tr>`
+      : `<tr class="pending">
+           <td>${identityLabel(row.identity_id, row.display_name)}</td>
+           <td colspan="5">Reveals at 9:30 AM ET</td>
+           <td class="mono" title="commitment">${row.commitment.slice(0, 12)}…</td>
+         </tr>`
+    ).join("");
+    container.innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Identity</th><th>Ticker</th><th class="num">Entry</th><th class="num">Stop</th><th class="num">Target</th>
+          <th>Status</th><th>Commitment</th>
+        </tr></thead>
+        <tbody>${body}</tbody>
+      </table>`;
+  } catch (error) {
+    container.innerHTML = `<p class="note error">${error.message}</p>`;
+  }
+}
+
+const picker = document.getElementById("session");
+picker.value = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+picker.addEventListener("change", () => loadSignals(picker.value));
+loadSignals(picker.value);
+
+getJson("/scoreboard")
+  .then(board => {
+    renderFreshness(document.getElementById("freshness"), board.freshness);
+    renderFreshness(document.getElementById("freshness-top"), board.freshness);
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>

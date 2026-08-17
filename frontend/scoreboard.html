@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Scoreboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Scoreboard">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main">
+  <h1>Scoreboard</h1>
+  <p class="note" title="Statistics reflect verified prediction accuracy against exchange
+     trade records. They do not represent actual trading returns.">
+    Ranked by the lower confidence bound of lifetime profit factor.
+    Statistics reflect prediction accuracy against exchange trade records —
+    not actual trading returns.
+  </p>
+  <p class="note divided" id="freshness-top"></p>
+
+  <div id="board"></div>
+  <p class="note" id="survivorship"></p>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+const pct = v => v == null ? "—"
+  : Number(v).toLocaleString("en-US", { style: "percent", maximumFractionDigits: 1 });
+const fixed = v => v == null ? "—" : Number(v).toFixed(2);
+
+function row(entry, pending, rank) {
+  const climb = pending && entry.progress
+    ? ` <span class="note collapsed-only">· ${entry.progress}</span>` : "";
+  return `<tr class="${pending ? "pending" : ""}">
+    <td>${pending ? "" : rank}</td>
+    <td>${identityLabel(entry.identity_id, entry.display_name)}${climb}</td>
+    <td class="num">${pct(entry.win_rate)}</td>
+    <td class="extra num">${pct(entry.breakeven_win_rate)}</td>
+    <td class="num">${entry.profit_factor == null && entry.settled > 0
+          ? "&gt;" + fixed(entry.pf_lower_bound ?? 99) : fixed(entry.profit_factor)}</td>
+    <td class="extra num">$${entry.account_balance}</td>
+    <td class="extra num">${pending ? entry.progress ?? entry.settled : entry.settled}</td>
+    <td class="extra num">${pct(entry.fill_rate)}</td>
+    <td></td>
+  </tr>`;
+}
+
+async function loadBoard() {
+  const board = await getJson("/scoreboard");
+  const qualBar = board.ranked.length && board.pending.length
+    ? `<tr class="qual-bar"><td colspan="9"><div class="bar">
+         <span class="qual-title">Pending qualification</span>
+         <span> — 33 settled · fill rate ≥ 50% · profit factor ≥ 1.25</span>
+       </div></td></tr>`
+    : "";
+  const rows =
+    board.ranked.map((e, i) => row(e, false, i + 1)).join("") +
+    qualBar +
+    board.pending.map(e => row(e, true)).join("");
+  document.getElementById("board").innerHTML = rows === ""
+    ? `<p class="note">No settled records yet.</p>`
+    : `<table>
+        <thead><tr><th>#</th><th>Identity</th><th class="num">Win Rate</th>
+        <th class="extra num" title="the win rate these win/loss sizes require just to
+            break even — compare with Win Rate">Breakeven</th>
+        <th class="num">Profit Factor</th>
+        <th class="extra num">Account</th><th class="extra num">Settled</th>
+        <th class="extra num">Fill Rate</th>
+        <th><button type="button" id="more-toggle" class="toggle">More ▸</button></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+  renderFreshness(document.getElementById("freshness"), board.freshness);
+  renderFreshness(document.getElementById("freshness-top"), board.freshness);
+
+  // the graveyard is public: the base rate every single record reads against
+  const s = board.survivorship;
+  if (s) document.getElementById("survivorship").textContent =
+    `Survivorship: ${s.ever_posted} identities have ever posted · ` +
+    `${s.reached_33} reached 33 settlements. Abandoned records never disappear.`;
+}
+
+// the toggle lives inside the rebuilt table, so wire it after each render
+document.getElementById("board").addEventListener("click", (event) => {
+  if (event.target.id !== "more-toggle") return;
+  const expanded = document.getElementById("board").classList.toggle("show-more");
+  event.target.textContent = expanded ? "Less ▾" : "More ▸";
+});
+
+loadBoard().catch(error => {
+  document.getElementById("board").innerHTML =
+    `<p class="note error">${error.message}</p>`;
+});
+</script>
+</body>
+</html>

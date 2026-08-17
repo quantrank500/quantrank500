@@ -1,0 +1,256 @@
+/* QuantRank500 — Google-packaging style (spec §9).
+   Black, grays, white. Green for wins only, red for losses only.
+   No gradients, no shadows, no decoration. */
+
+:root {
+  --bg: #ffffff;
+  --ink: #202124;
+  --ink-strong: #000000;
+  --gray: #5f6368;
+  --gray-light: #9aa0a6;
+  --line: #dadce0;
+  --paper: #f8f9fa;
+  --win: #188038;
+  --loss: #c5221f;
+}
+
+/* dark palette: system preference, unless the user chose explicitly */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #202124; --ink: #e8eaed; --ink-strong: #ffffff;
+    --gray: #9aa0a6; --gray-light: #80868b;
+    --line: #3c4043; --paper: #2a2b2e;
+    --win: #81c995; --loss: #f28b82;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #202124; --ink: #e8eaed; --ink-strong: #ffffff;
+  --gray: #9aa0a6; --gray-light: #80868b;
+  --line: #3c4043; --paper: #2a2b2e;
+  --win: #81c995; --loss: #f28b82;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+main { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+
+header.site {
+  border-bottom: 1px solid var(--line);
+  padding: 16px;
+  /* stays visible while scrolling; the border is the only separator (no shadows) */
+  position: sticky; top: 0;
+  background: var(--bg);
+  z-index: 5;
+}
+header.site nav {
+  /* wider than the 640px reading column so six full labels fit on one line */
+  max-width: 860px; margin: 0 auto;
+  display: flex; gap: 16px; align-items: baseline;
+  font-size: 0.95rem;
+}
+header.site .brand {
+  font-weight: 600; color: var(--ink);
+  display: flex; align-items: center; gap: 8px;
+}
+header.site .brand small {
+  display: block; font-size: 0.65rem; font-weight: 500;
+  color: var(--gray-light); letter-spacing: 0.04em;
+}
+/* the mark: theme-aware via tokens, so one SVG serves both palettes */
+.mark { width: 20px; height: 20px; flex: none; }
+.mark rect { fill: var(--ink); }
+.mark text { fill: var(--bg); font-family: inherit; }
+.env-badge {
+  position: fixed; top: 8px; right: 8px; z-index: 10;
+  border: 2px solid var(--gray); border-radius: 6px;
+  color: var(--gray); background: var(--paper);
+  font-size: 1.05rem; font-weight: 700; letter-spacing: 0.1em;
+  padding: 6px 16px;
+}
+/* three quiet lines below the pinned nav; scrolls away with the page */
+.info-strip {
+  border-bottom: 1px solid var(--line);
+  padding: 10px 16px;
+  color: var(--gray-light); font-size: 0.8rem; line-height: 1.7;
+}
+.info-strip .info-inner { max-width: 860px; margin: 0 auto; }
+.info-strip a { color: var(--gray); text-decoration: none; }
+.info-strip a:hover { color: var(--ink); }
+header.site a { color: var(--gray); text-decoration: none;
+                padding-bottom: 4px; border-bottom: 2px solid transparent; }
+header.site a:hover { color: var(--ink); }
+header.site a.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+h1 { font-size: 1.4rem; font-weight: 600; margin: 24px 0 8px; }
+h2 { font-size: 1.05rem; font-weight: 600; margin: 32px 0 8px; }
+p.note { color: var(--gray); font-size: 0.9rem; }
+/* trailing small print sits clearly apart so the last content section keeps its punch */
+p.small-print { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); }
+/* a light separation: space + thin rule above */
+p.divided { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+form.card, .card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px 0;
+}
+
+label { display: block; font-size: 0.85rem; color: var(--gray); margin: 16px 0 4px; }
+input {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 4px;
+  font-size: 1rem; color: var(--ink); background: var(--bg);
+}
+input:focus { outline: 2px solid var(--ink); border-color: var(--ink); }
+
+button {
+  margin-top: 24px; padding: 10px 24px;
+  background: var(--ink); color: var(--bg);
+  border: none; border-radius: 4px;
+  font-size: 1rem; cursor: pointer;
+}
+button:hover { background: var(--ink-strong); }
+button.small { margin-top: 8px; margin-right: 8px; padding: 6px 14px; font-size: 0.85rem; }
+textarea {
+  width: 100%; min-height: 90px; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 4px;
+  color: var(--ink); background: var(--bg);
+  font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+th { text-align: left; color: var(--gray); font-weight: 500;
+     border-bottom: 1px solid var(--line); padding: 8px; }
+td { border-bottom: 1px solid var(--paper); padding: 8px; }
+tr.pending td { color: var(--gray-light); }
+
+.win  { color: var(--win); }
+.loss { color: var(--loss); }
+td .sub { display: block; font-size: 0.78rem; color: var(--gray-light); }
+.identicon { vertical-align: -3px; margin-right: 6px; border-radius: 2px; }
+.suffix { color: var(--gray-light); font-size: 0.85em; }
+a.download {
+  display: inline-block; margin-top: 8px; padding: 6px 14px;
+  background: var(--ink); color: var(--bg); border-radius: 4px;
+  font-size: 0.85rem; text-decoration: none;
+}
+a.download:hover { background: var(--ink-strong); }
+
+/* Scoreboard: the board ranks by two numbers; supporting columns live behind More */
+#board .extra { display: none; }
+#board.show-more .extra { display: table-cell; }
+#board.show-more .collapsed-only { display: none; }
+button.toggle {
+  background: none; border: none; color: var(--gray); cursor: pointer;
+  font-size: 0.85rem; font-weight: 500; padding: 0; margin: 0;
+  white-space: nowrap;
+}
+button.toggle:hover { color: var(--ink); background: none; }
+.mono { font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem; }
+.result-box { margin-top: 16px; padding: 12px; background: var(--paper);
+              border-radius: 4px; font-size: 0.9rem; overflow-wrap: anywhere; }
+.error { color: var(--loss); }
+
+footer.freshness {
+  max-width: 640px; margin: 48px auto 0; padding: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--gray-light); font-size: 0.8rem;
+}
+.footer-links {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--paper);
+}
+.footer-links a { color: var(--gray); text-decoration: none; }
+.footer-links a:hover { color: var(--ink); }
+/* big quiet names, page-end signature style; colorless until hovered */
+.supporters { display: flex; flex-wrap: wrap; gap: 8px 28px;
+              align-items: baseline; margin-top: 18px; }
+.supporters-label { font-size: 0.8rem; }
+.supporters a {
+  color: var(--gray-light); font-size: 1.35rem; font-weight: 700;
+  letter-spacing: 0.02em; text-decoration: none;
+}
+.supporters a:hover { color: var(--gray); }
+
+/* the qualification bar, made visible: ranked above the line, pending below */
+tr.qual-bar td { border-bottom: none; padding: 20px 0 0; }
+tr.qual-bar .bar { border-top: 2px solid var(--gray); padding: 12px 0 12px; }
+tr.qual-bar span { font-size: 0.75rem; color: var(--gray-light); letter-spacing: 0.03em; }
+tr.qual-bar .qual-title { color: var(--gray); font-weight: 600; font-size: 0.85rem; }
+
+/* glossary: hairlines chunk the definitions for scanning */
+main.ruled h2:not(:first-of-type) { border-top: 1px solid var(--line); padding-top: 20px; }
+
+/* wide tables scroll inside their container instead of breaking the page (phones) */
+#board, #quarterly, #signals, .card { overflow-x: auto; }
+
+/* phones: the fixed badge would cover the nav links — dock it bottom-left,
+   smaller but still always on screen; keep the nav clear of the toggle */
+@media (max-width: 640px) {
+  .env-badge {
+    top: auto; bottom: 12px; left: 12px; right: auto !important;
+    font-size: 0.75rem; padding: 3px 10px; border-width: 1.5px;
+  }
+  header.site nav { padding-right: 44px; flex-wrap: wrap; row-gap: 4px; }
+}
+
+button.theme-toggle {
+  position: fixed; top: 8px; right: 8px; z-index: 10;
+  margin: 0; padding: 2px 9px; font-size: 0.85rem; line-height: 1.4;
+  background: var(--paper); color: var(--gray);
+  border: 1px solid var(--gray); border-radius: 4px; cursor: pointer;
+}
+button.theme-toggle:hover { color: var(--ink); background: var(--paper); }
+.env-badge { right: 56px; }
+
+/* --- craft pass: detail spent only where the eye rests --- */
+
+/* underlines that respect descenders */
+a { text-underline-offset: 3px; }
+
+/* keyboard users get a door; everyone else never sees it */
+.skip {
+  position: absolute; left: -9999px; top: 8px; z-index: 100;
+  background: var(--bg); color: var(--ink);
+  padding: 8px 14px; border: 1px solid var(--ink); border-radius: 4px;
+}
+.skip:focus { left: 12px; }
+
+/* the maker's seal at the end of every page */
+.footer-seal { text-align: center; margin-bottom: 10px; }
+.footer-seal .mark { width: 16px; height: 16px; opacity: 0.55; }
+
+/* financial-grade digit alignment everywhere numbers stack */
+table, .mono, #plan-feedback { font-variant-numeric: tabular-nums; }
+
+/* hover states arrive softly; nothing ever moves */
+a, button, header.site a, .footer-links a, .info-strip a {
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+}
+
+/* reading forty rows should be effortless */
+tbody tr:hover td { background: var(--paper); }
+tr.qual-bar:hover td { background: transparent; }
+
+/* tables arrive, they don't pop */
+@keyframes settle-in { from { opacity: 0; } to { opacity: 1; } }
+#board table, #quarterly table, #signals table, .card table {
+  animation: settle-in .25s ease;
+}
+
+/* selection and keyboard focus in the house palette */
+::selection { background: var(--ink); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* the other half of financial alignment: numeric columns are right-aligned,
+   so tabular digits stack on the decimal point */
+th.num, td.num { text-align: right; }

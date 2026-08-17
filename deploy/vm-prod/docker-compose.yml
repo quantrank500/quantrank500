@@ -1,0 +1,74 @@
+# QuantRank500 PROD VM stack — dark until launch (spec v13.42).
+# No published ports, and cloudflared sits behind the "public" profile, so a
+# plain `up` has zero ingress of any kind:
+#     docker compose up -d                       # dark: unreachable from outside
+#     docker compose --profile public up -d      # launch: the tunnel goes live
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: quantrank
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in .env}
+      POSTGRES_DB: quantrank500_prod
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: ./app
+    restart: unless-stopped
+    environment:
+      QR500_ENV: prod
+      QR500_PG_DSN: postgresql://quantrank:${POSTGRES_PASSWORD}@db:5432/quantrank500_prod
+      QR500_LAKE_DSN: postgresql://quantrank:${POSTGRES_PASSWORD}@db:5432/quantrank500_prod
+      QR500_ROOT_PATH: /api
+      QR500_API_HOST: 0.0.0.0
+      # posting-time reference lookups; prod's lake starts empty and learns
+      DATABENTO_API_KEY: ${DATABENTO_API_KEY:-}
+    depends_on:
+      - db
+
+  worker:
+    build: ./app
+    restart: unless-stopped
+    command: ["python", "scripts/run_worker.py"]
+    environment:
+      QR500_ENV: prod
+      QR500_PG_DSN: postgresql://quantrank:${POSTGRES_PASSWORD}@db:5432/quantrank500_prod
+      QR500_LAKE_DSN: postgresql://quantrank:${POSTGRES_PASSWORD}@db:5432/quantrank500_prod
+      QR500_INGEST: ${QR500_INGEST:-off}
+      DATABENTO_API_KEY: ${DATABENTO_API_KEY:-}
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://quantrank:${POSTGRES_PASSWORD}@db:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET:?set in .env}
+    depends_on:
+      - db
+
+  cloudflared:
+    profiles: ["public"]  # launch-day switch; dark prod has no ingress at all
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    # :- not :? — compose interpolates even profile-off services; the profile
+    # is the dark switch, and an empty token fails loudly at launch anyway
+    command: ["tunnel", "--no-autoupdate", "run", "--token", "${TUNNEL_TOKEN:-}"]
+    depends_on:
+      - nginx
+
+volumes:
+  pgdata:

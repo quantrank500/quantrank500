@@ -1,0 +1,27 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: quantrank
+          POSTGRES_PASSWORD: quantrank
+          POSTGRES_DB: quantrank500
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U quantrank"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: pytest
+      - run: ruff check src tests scripts

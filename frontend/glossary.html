@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Definitions</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Definitions">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main" class="ruled">
+  <h1>Definitions</h1>
+  <p class="note">
+    Every number on this site, in plain language. All statistics use settled
+    predictions only; unresolved settlements (halts, missing data) are excluded.
+  </p>
+
+  <h2>Quant</h2>
+  <p>
+    Short for quantitative analyst: someone who judges trading by measurement,
+    not stories — sample size, verified records, recomputable edge. QuantRank500
+    borrows the discipline, not the gatekeeping: <strong>everyone is
+    welcome</strong>, and every record is measured the same way.
+  </p>
+
+  <h2>Long (and short)</h2>
+  <p>
+    A long position profits when the price rises: buy first, sell later.
+    Short is the reverse — selling borrowed shares to profit from a fall.
+    QuantRank500 is long only: every prediction says &#8220;this stock goes up,&#8221;
+    which keeps the rules simple and every record comparable.
+  </p>
+
+  <h2>Win Rate</h2>
+  <p>
+    The share of settled predictions that won. Breakevens count in the total
+    but not as wins, so they lower win rate without being losses.
+  </p>
+
+  <h2>Profit Factor</h2>
+  <p>
+    Dollars won per dollar lost: total winning PnL ÷ total losing PnL. Above 1.0
+    is net-positive. A record with no losses shows &#8220;&gt;X&#8221;, never infinity.
+    The scoreboard ranks by a conservative lower bound of this number, so short
+    lucky streaks can't outrank long consistent records.
+  </p>
+
+  <h2>Fill Rate</h2>
+  <p>
+    How often the market reached the predicted entry. Predictions are limit
+    orders: if the session never trades at your entry, the prediction expires
+    unfilled — recorded and counted here. A low fill rate means entries sit
+    too far from the market.
+  </p>
+
+  <h2>Breakeven win rate</h2>
+  <p>
+    The win rate these win and loss sizes need just to break even: average loss
+    ÷ (average win + average loss). The gap between this and the actual win
+    rate is the edge. Big wins with small losses might need only 5%, so 6%
+    is profitable; a high win rate below its own requirement still loses money.
+  </p>
+
+  <h2>Flat expiries</h2>
+  <p>
+    Predictions that ended their three-day window within ±1% of the fill price —
+    neither win nor loss. Shown as &#8220;flat&#8221; on the site; recorded as &#8220;breakeven&#8221;
+    in the ledger and CSV. The account still moves by the exit price.
+  </p>
+
+  <h2>Typical stop distance</h2>
+  <p>
+    How far below entry this predictor places stops, on average. Tight stops
+    risk less but get hit more often; wide stops survive noise but lose more.
+    Neither is correct — this is style, not skill.
+  </p>
+
+  <h2>Avg reward-to-risk</h2>
+  <p>
+    Planned target distance ÷ planned stop distance. At 3.0, the aim is to win
+    $3 for every $1 risked — why a low win rate can still profit, and a high
+    one can still lose.
+  </p>
+
+  <h2>Last 33 — win rate (&#8220;recent form&#8221;)</h2>
+  <p>
+    The same win rate over only the last 33 settled predictions. Shows current
+    form; never affects ranking.
+  </p>
+
+  <h2>Eligible stocks</h2>
+  <p>
+    Any US stock at or above $3 and $1M daily dollar volume. The floors
+    protect the record, not the predictor: very cheap, thinly traded stocks
+    can be nudged to touch a price, and their prints vary more between
+    venues — both make settlements less trustworthy. Both values are working
+    defaults and may be tuned.
+  </p>
+
+  <h2>The $500 Account</h2>
+  <p>
+    Everyone starts at $500. Each fill commits one third of the balance at that
+    moment; the balance compounds with every settlement, in order. Recomputed
+    from the ledger every time — never stored, never editable.
+  </p>
+
+  <h2>Settled / Unfilled / Unresolved</h2>
+  <p>
+    <strong>Settled</strong>: the market decided — stop, target, or three-day
+    expiry. <strong>Unfilled</strong>: the entry was never reached; recorded
+    and counted in fill rate. <strong>Unresolved</strong>: the outcome could
+    not be determined (halt, missing data); excluded from all statistics and
+    visibly labeled.
+  </p>
+
+  <h2>Spread, commissions, and fill timing</h2>
+  <p>
+    Why a real trade would differ from a settled prediction.
+    <strong>Spread</strong>: buying costs slightly more than selling pays;
+    settlements use trade prints, which sit inside that gap.
+    <strong>Commissions</strong>: brokers charge fees the simulation doesn't
+    subtract. <strong>Fill timing</strong>: a real order stands in line — a
+    touch of your price doesn't guarantee a fill, but the touch rule credits
+    one. All three usually make real results slightly worse than the record,
+    which is why the statistics measure prediction accuracy, not trading
+    returns.
+  </p>
+
+  <h2 id="csv">CSV export columns</h2>
+  <p class="note">
+    The per-identity export (&#8220;Download record&#8221;) and the nightly full-ledger
+    export share these columns. <strong>A mostly-blank row is not missing
+    data</strong> — predictions export commitment-only until their 9:30 AM ET
+    reveal. <strong>pnl is standardized at $500 notional</strong>, not the
+    account impact.
+  </p>
+  <table>
+    <thead><tr><th>Column</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>id</td><td>The prediction's ledger number.</td></tr>
+      <tr><td>identity_id</td><td>The predictor's public UUID.</td></tr>
+      <tr><td>session_date</td><td>The trading session the prediction targeted.</td></tr>
+      <tr><td>status</td><td>Where the prediction is in its life:
+          queued · working · active · unfilled · closed.</td></tr>
+      <tr><td>commitment</td><td>SHA-256 of the canonical payload + nonce, public
+          since submission. Recompute it from the revealed fields to verify the
+          prediction was locked before the open.</td></tr>
+      <tr><td>created_at</td><td>When the prediction was recorded
+          (database clock, never the client's).</td></tr>
+      <tr><td>ticker</td><td>The predicted stock. Blank until reveal.</td></tr>
+      <tr><td>entry_price / stop_loss / target_price</td><td>The predicted plan.
+          Blank until reveal.</td></tr>
+      <tr><td>commit_nonce</td><td>The random salt inside the commitment,
+          published at reveal so anyone can re-hash. Blank until reveal —
+          publishing it early would make the commitment guessable.</td></tr>
+      <tr><td>fill_price / fill_time</td><td>Where and when the limit order
+          filled; blank if unfilled or still queued.</td></tr>
+      <tr><td>exit_price</td><td>The settlement price.</td></tr>
+      <tr><td>pnl</td><td>Standardized profit/loss: 500 × (exit − fill) ÷ fill.
+          Recompute account balances by replaying settlements with ⅓-of-balance
+          sizing.</td></tr>
+      <tr><td>result</td><td>How it ended:
+          win · loss · breakeven · unresolved.</td></tr>
+      <tr><td>settled_by</td><td>What ended it:
+          stop · target · expiry · halt · ambiguous.</td></tr>
+      <tr><td>settled_at</td><td>Market time of the settling print or bar.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note small-print">
+    A record of predictions, not investment advice. Statistics reflect
+    prediction accuracy against exchange trade records — not actual trading
+    returns.
+  </p>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+getJson("/scoreboard")
+  .then(board => renderFreshness(document.getElementById("freshness"), board.freshness))
+  .catch(() => {});
+</script>
+</body>
+</html>

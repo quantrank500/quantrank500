@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Quarterly 500</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Quarterly 500">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main">
+  <h1>The Quarterly 500 <span class="note" id="quarter-label"></span></h1>
+  <p class="note">
+    Each calendar quarter is a separate challenge: everyone re-enters at $500,
+    balances are computed from that quarter's settlements only, and the highest
+    quarter-end balance wins. At least 10 settled predictions in the quarter to
+    appear. No prizes — the balance is the trophy. Ruin is never permanent:
+    next quarter is a fresh $500, and lifetime records never reset.
+  </p>
+  <p class="note divided" id="freshness-top"></p>
+
+  <div id="quarterly"></div>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+const now = new Date();
+document.getElementById("quarter-label").textContent =
+  `— Q${Math.floor(now.getMonth() / 3) + 1} ${now.getFullYear()}`;
+
+getJson("/scoreboard").then(board => {
+  document.getElementById("quarterly").innerHTML = board.quarterly.length === 0
+    ? `<p class="note">No qualifying records this quarter yet.</p>`
+    : `<table>
+        <thead><tr><th>#</th><th>Identity</th><th class="num">Balance</th><th class="num">Settled</th></tr></thead>
+        <tbody>${board.quarterly.map((e, i) =>
+          `<tr><td>${i + 1}</td><td>${identityLabel(e.identity_id, e.display_name)}</td>
+           <td class="num">$${e.balance}</td><td class="num">${e.settled}</td></tr>`).join("")}</tbody>
+      </table>`;
+  renderFreshness(document.getElementById("freshness"), board.freshness);
+  renderFreshness(document.getElementById("freshness-top"), board.freshness);
+}).catch(error => {
+  document.getElementById("quarterly").innerHTML =
+    `<p class="note error">${error.message}</p>`;
+});
+</script>
+</body>
+</html>

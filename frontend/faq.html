@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Frequently Asked Questions</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Frequently Asked Questions">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main" class="ruled">
+  <h1>Frequently Asked Questions</h1>
+
+  <h2>Is this investment advice? Can I trade the signals?</h2>
+  <p>
+    No, and trade at your own judgment. This is a record of predictions —
+    statistics measure prediction accuracy against exchange trade records, not
+    actual trading returns. Real execution differs: spread, commissions, fill
+    timing. The platform verifies predictions, not executions, and nobody here
+    knows your situation.
+  </p>
+
+  <h2>How do I know predictions were really made before the open?</h2>
+  <p>
+    Every prediction publishes a cryptographic commitment (a hash) the moment it
+    is submitted — visible on Today's Signals before the market opens, while the
+    content stays hidden. At 9:30 AM ET the content is revealed, and anyone can
+    recompute the hash from the revealed fields and check it against the pre-open
+    commitment. Precommitment isn't an assertion here; it's checkable.
+  </p>
+
+  <h2>Can I edit or delete a prediction?</h2>
+  <p>
+    No — and that is the product. Once locked, a prediction is permanent: wins,
+    losses, and entries the market never reached all stay on the record forever.
+    A track record you can prune is not a track record. Post nothing you are
+    not willing to own.
+  </p>
+
+  <h2>What happens if I lose my identity key?</h2>
+  <p>
+    The record survives — publicly — but nobody can ever post to it again,
+    including you. There are no accounts, emails, or resets by design, so the
+    key you download is the only proof of ownership. Save it when the site
+    offers it; it cannot be recovered.
+  </p>
+
+  <h2>Why is a 6% win rate ranked above a 60% one?</h2>
+  <p>
+    Because winning often is not the same as winning money. A predictor with
+    small stops and large targets can lose 94 times in 100 and still be
+    profitable — while a high win rate with big losses quietly bleeds. The
+    scoreboard ranks by profit factor (dollars won per dollar lost), and every
+    profile shows the breakeven win rate its style requires. Compare the two
+    and the edge — or its absence — is visible.
+  </p>
+
+  <h2>Could my record here differ from real trading of the same plans?</h2>
+  <p>
+    Yes — in two small, known ways. Sometimes the platform says your entry
+    filled when a real order would not have: the price touched your number,
+    but in real trading there can be a waiting line at that price, and your
+    order might never get its turn. And sometimes the platform misses a win:
+    our price feed does not see every trade on every exchange, so on quieter
+    stocks it can miss the moment your target was reached — and when that
+    happens, the mistake goes against you, never in your favor. We checked
+    both against real brokerage trades: fill decisions agree about 95% of
+    the time, and when both agree on the outcome, the prices match to the
+    cent. So if anything, records here are slightly understated. Read them
+    as prediction accuracy, not money you would have made.
+  </p>
+
+  <h2>Can't someone create many identities and show off the lucky one?</h2>
+  <p>
+    Identities are free and anonymous, so yes — anyone can run many. The
+    defenses are statistical and public. The scoreboard requires 33 settled
+    predictions and ranks by a conservative lower bound of profit factor, so
+    a lucky streak reads as unproven, not as skill — surviving the grind
+    takes months per identity. And the graveyard is public: the scoreboard
+    shows how many identities ever posted versus how many reached 33
+    settlements, and abandoned records never disappear. Read any single
+    record against that base rate. The Quarterly 500 is easier to get lucky
+    on by design — one quarter, balance as the trophy — which is why the
+    lifetime board is the record that matters.
+  </p>
+
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+getJson("/scoreboard")
+  .then(board => renderFreshness(document.getElementById("freshness"), board.freshness))
+  .catch(() => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+[project]
+name = "quantrank500"
+version = "0.1.0"
+description = "QuantRank500 — records stock predictions before the open, settles them against exchange trade records."
+requires-python = ">=3.11"
+dependencies = [
+    "tzdata",  # IANA timezone db for zoneinfo on Windows; all session logic is ET
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "psycopg[binary]>=3",
+    "apscheduler>=3.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+    "httpx>=0.27",  # FastAPI TestClient
+]
+lake = [
+    # host-side only: pyodbc for the one-time slice copy from the shared SQL Server
+    "pyodbc>=5",
+]
+databento = [
+    # nightly ingest on demo/prod VMs (QR500_INGEST=databento); imported lazily
+    "databento>=0.36",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# B008: FastAPI's Depends(...) in argument defaults is the framework idiom
+"src/quantrank500/api/*" = ["B008"]

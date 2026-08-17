@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — About</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — About">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
+    <a href="index.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main">
+  <h1>What it is</h1>
+  <p>
+    QuantRank500 is a free, open-source platform that records stock
+    predictions before the market opens and settles them against actual exchange
+    trade records. Every prediction is timestamped, immutable, and settled
+    automatically. No one reports their own results.
+  </p>
+  <p>Everyone competes with the same simulated stake: <strong>the $500 account</strong>.</p>
+
+  <h2>The rules</h2>
+  <table>
+    <tbody>
+      <tr><td>Predictions</td><td>One per day. Long only.</td></tr>
+      <tr><td>Eligible stocks</td><td>Any US stock: price $3 or more, $1M+ daily dollar volume.</td></tr>
+      <tr><td>Holding period</td><td>Three trading days, maximum.</td></tr>
+      <tr><td>Minimum target</td><td>8.5% above entry.</td></tr>
+      <tr><td>The $500 account</td><td>Everyone starts with the same stake.</td></tr>
+      <tr><td>Position size</td><td>One third of your account balance, at fill.</td></tr>
+      <tr><td>Cutoff</td><td>8:00 PM ET the prior trading day.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>How it works</h2>
+  <p>
+    Lock a prediction tonight. It becomes a limit order at tomorrow's open. The
+    market fills it — or it expires unfilled. Both are recorded. Every evening,
+    the platform replays the session's trade records and settles every open
+    prediction. After 33 settled predictions, you appear on the scoreboard.
+  </p>
+
+  <h2>The Quarterly 500</h2>
+  <p>
+    Each calendar quarter is a separate challenge: everyone re-enters at $500,
+    balances count only that quarter's settlements, and the highest quarter-end
+    balance wins. At least 10 settled predictions in the quarter to appear.
+    No prizes — the balance is the trophy. Ruin is never permanent: next quarter
+    is a fresh $500, and lifetime records never reset.
+  </p>
+
+  <h2>The value</h2>
+  <p>
+    For those who predict — a free, timestamped, verifiable record.
+    For those who evaluate — every settlement independently re-verifiable from
+    public data. For those who watch — today's signals, provably locked before
+    the open. For everyone — nothing is hidden: the full record of every
+    prediction and settlement is public, and the code that produced it is
+    open source.
+  </p>
+
+  <h2>What it is not</h2>
+  <p>
+    No accounts required. No emails. No notifications. No ads. No data sales.
+    A public record. Nothing more.
+  </p>
+
+  <p class="note small-print">
+    Settled against exchange trade records (tick data; 1-minute bars as documented
+    fallback). Actual execution prices may differ due to spread, commissions, and
+    fill timing. QuantRank500 verifies predictions, not executions.
+  </p>
+
+  <p class="note">
+    New to these statistics? <a href="glossary.html">Definitions</a> — every
+    number on this site explained in plain language.
+  </p>
+
+  <p class="note">
+    For developers and auditors: the API is documented in an
+    <a id="api-docs-link" href="#">interactive reference</a> generated from the
+    running code. The platform code will be open-sourced at launch.
+  </p>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+document.getElementById("api-docs-link").href = `${API}/docs`;
+
+getJson("/scoreboard")
+  .then(board => renderFreshness(document.getElementById("freshness"), board.freshness))
+  .catch(() => {});
+</script>
+</body>
+</html>
