@@ -68,6 +68,12 @@ pip install -e ".[dev]"
 pytest
 ```
 
+## Going deeper
+
+[docs/DEVELOPER_FAQ.md](docs/DEVELOPER_FAQ.md) — the database design
+behind the promise: hash chain, commit-reveal, tamper-evidence, what the
+system can and cannot prove.
+
 ## Licensing
 
 Code [MIT](LICENSE) · published ledger data CC0 (public domain).
