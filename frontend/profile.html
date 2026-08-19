@@ -6,6 +6,8 @@
   <title>QuantRank500 — My Record</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
   <meta property="og:site_name" content="QuantRank500">
@@ -20,8 +22,8 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <nav>
-    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
-    <a href="index.html">Post</a>
+    <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><g transform="translate(18.351,44) scale(0.017578,-0.017578)"><path style="fill:var(--bg,#ffffff)" d="M770 -25Q462 -25 268 175Q74 377 74 698Q74 1037 271 1248Q467 1458 793 1458Q1100 1458 1289 1257Q1479 1057 1479 727Q1479 390 1282 182Q1275 175 1269.0 168.5Q1263 162 1256 156L1619 -193H1167L977 0Q883 -25 770 -25ZM784 1180Q615 1180 514 1052Q414 925 414 715Q414 502 514 378Q614 254 776 254Q943 254 1041 374Q1139 496 1139 709Q1139 931 1044 1056Q950 1180 784 1180Z"/></g></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></a>
+    <a href="post.html">Post</a>
     <a href="signals.html">Today's Signals</a>
     <a href="scoreboard.html">Scoreboard</a>
     <a href="quarterly.html">Quarterly 500</a>
@@ -181,12 +183,22 @@ async function renderStats(publicId) {
     <p class="note"><a href="glossary.html">Definitions</a> — plain-language
     explanations of every statistic.</p>`;
 
-  document.getElementById("open").innerHTML = stats.open.length === 0
-    ? `<p class="note">No open positions.</p>`
+  // queued predictions belong here too — a poster's first act must be visible
+  let queued = [];
+  try {
+    queued = (await getJson(`/predictions?identity=${publicId}`))
+      .filter(p => p.status === "queued");
+  } catch { /* stats still render */ }
+  const queuedHtml = queued.map(p =>
+    `<p class="note">${p.revealed ? p.ticker : "Sealed until 9:30 AM ET"}
+       — session ${p.session_date} · queued · settles overnight</p>`).join("");
+  const openTable = stats.open.length === 0 ? ""
     : `<table><thead><tr><th>Ticker</th><th>Session</th><th class="num">Fill</th></tr></thead><tbody>${
         stats.open.map(p =>
           `<tr><td>${p.ticker}</td><td>${p.session_date}</td><td class="num">${p.fill_price}</td></tr>`
         ).join("")}</tbody></table>`;
+  document.getElementById("open").innerHTML =
+    (openTable + queuedHtml) || `<p class="note">No open positions.</p>`;
 
   document.getElementById("recent").innerHTML = (stats.recent_settlements.length === 0
     ? `<p class="note">Nothing settled yet.</p>`

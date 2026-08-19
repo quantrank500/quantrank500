@@ -282,6 +282,9 @@ a { text-underline-offset: 3px; }
 }
 .skip:focus { left: 12px; }
 
+/* commitments copy on click — verification starts with copying */
+.copyable { cursor: pointer; }
+
 /* the story's one piece of evidence: a terminal crop, framed quietly */
 .story-receipt {
   display: block; max-width: 100%; margin: 20px auto;

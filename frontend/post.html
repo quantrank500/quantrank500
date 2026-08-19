@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — Post a Prediction</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="website">
+  <meta property="og:description"
+        content="A public record of stock predictions, settled by the market itself. A record of predictions, not investment advice.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — Post a Prediction">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><g transform="translate(18.351,44) scale(0.017578,-0.017578)"><path style="fill:var(--bg,#ffffff)" d="M770 -25Q462 -25 268 175Q74 377 74 698Q74 1037 271 1248Q467 1458 793 1458Q1100 1458 1289 1257Q1479 1057 1479 727Q1479 390 1282 182Q1275 175 1269.0 168.5Q1263 162 1256 156L1619 -193H1167L977 0Q883 -25 770 -25ZM784 1180Q615 1180 514 1052Q414 925 414 715Q414 502 514 378Q614 254 776 254Q943 254 1041 374Q1139 496 1139 709Q1139 931 1044 1056Q950 1180 784 1180Z"/></g></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></a>
+    <a href="post.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main">
+  <h1>Post a prediction</h1>
+  <p class="note">
+    One prediction per session. Long only. Three trading days maximum.
+    Any US stock at or above $3 and $1M daily volume.
+    Cutoff <strong>8:00 PM ET</strong><span id="cutoff-local"></span> the
+    prior trading day — submissions after the cutoff roll forward to the
+    next open session.
+    <span id="countdown"></span>
+  </p>
+  <p class="note" id="demo-note" hidden>
+    <strong>Demo:</strong> full platform, real market data, live nightly
+    settlement — but a sandbox: records here may be reset before launch.
+  </p>
+
+  <form class="card" id="plan">
+    <label for="ticker">Ticker</label>
+    <input id="ticker" name="ticker" required placeholder="AAPL" autocomplete="off">
+
+    <label for="entry">Entry — within 3% of the latest close</label>
+    <input id="entry" name="entry_price" required inputmode="decimal" placeholder="10.00">
+
+    <label for="stop">Stop — below entry</label>
+    <input id="stop" name="stop_loss" required inputmode="decimal" placeholder="9.50">
+
+    <label for="target">Target — at least 8.5% above entry</label>
+    <input id="target" name="target_price" required inputmode="decimal" placeholder="10.90">
+
+    <p class="note" id="plan-feedback"></p>
+
+    <button type="submit">Lock it in</button>
+  </form>
+
+  <div id="outcome"></div>
+
+  <p class="note">
+    Your record lives in this browser (an anonymous ledger identity, created with
+    your first post). Save your identity key — offered right after your first
+    post, and any time from My Record. If this browser's storage is lost before
+    the key is saved, the record is unclaimable.
+  </p>
+  <p class="note">
+    Settled against exchange trade records (1-minute bars as documented fallback).
+    Actual execution prices may differ due to spread, commissions, and fill timing.
+    QuantRank500 verifies predictions, not executions.
+  </p>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+document.getElementById("plan").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(event.target);
+  const outcome = document.getElementById("outcome");
+  outcome.innerHTML = "";
+  try {
+    const posted = await postPrediction({
+      ticker: form.get("ticker").trim().toUpperCase(),
+      entry_price: form.get("entry_price"),
+      stop_loss: form.get("stop_loss"),
+      target_price: form.get("target_price"),
+    });
+    const saveBlock = keySaved() ? "" : `
+      <div class="result-box">
+        <strong>Save your identity key now.</strong>
+        ${saveKeyControls()}
+      </div>`;
+    outcome.innerHTML = `
+      <div class="result-box">
+        Locked for session <strong>${posted.session_date}</strong>
+        — reveals 9:30 AM ET · settles overnight.
+        Your public commitment (verifiable after the reveal):<br>
+        <span class="mono">${posted.commitment}</span>
+      </div>${saveBlock}`;
+    event.target.reset();
+  } catch (error) {
+    outcome.innerHTML = `<div class="result-box error">${error.message}</div>`;
+  }
+});
+
+// live plan feedback: see the percentages before the server does
+function updatePlanFeedback() {
+  const entry = parseFloat(document.getElementById("entry").value);
+  const stop = parseFloat(document.getElementById("stop").value);
+  const target = parseFloat(document.getElementById("target").value);
+  const parts = [];
+  if (entry > 0 && stop > 0) {
+    const pct = ((1 - stop / entry) * 100).toFixed(1);
+    parts.push(stop < entry ? `stop −${pct}%` : "stop must be below entry ⚠");
+  }
+  if (entry > 0 && target > 0) {
+    const pct = ((target / entry - 1) * 100).toFixed(1);
+    parts.push(pct >= 8.5 ? `target +${pct}% ✓` : `target +${pct}% — needs ≥ 8.5%`);
+  }
+  if (entry > 0 && stop > 0 && target > entry && stop < entry) {
+    parts.push(`reward:risk ${((target - entry) / (entry - stop)).toFixed(1)}`);
+  }
+  document.getElementById("plan-feedback").textContent = parts.join(" · ");
+}
+["entry", "stop", "target"].forEach(id =>
+  document.getElementById(id).addEventListener("input", updatePlanFeedback));
+
+// timezone empathy: show the cutoff once in the visitor's own clock
+(function () {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (!tz || tz === "America/New_York") return;
+  const now = new Date();
+  const etNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+  const cutoffEt = new Date(etNow);
+  cutoffEt.setHours(20, 0, 0, 0);
+  const local = new Date(now.getTime() + (cutoffEt.getTime() - etNow.getTime()));
+  const time = local.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const nextDay = local.getDate() !== now.getDate();
+  document.getElementById("cutoff-local").textContent =
+    ` (${time}${nextDay ? " next day" : ""} your time)`;
+})();
+
+function updateCountdown() {
+  const now = new Date();
+  const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+  const cutoff = new Date(et);
+  cutoff.setHours(20, 0, 0, 0);
+  const label = document.getElementById("countdown");
+  if (et < cutoff) {
+    const minutes = Math.floor((cutoff - et) / 60000);
+    label.textContent =
+      ` Today's cutoff in ${Math.floor(minutes / 60)}h ${minutes % 60}m.`;
+  } else {
+    label.textContent = " Tonight's cutoff has passed — entries roll forward.";
+  }
+}
+updateCountdown();
+setInterval(updateCountdown, 30000);
+
+getJson("/scoreboard")
+  .then(board => renderFreshness(document.getElementById("freshness"), board.freshness))
+  .catch(() => {});
+</script>
+</body>
+</html>

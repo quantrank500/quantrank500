@@ -57,7 +57,11 @@ async function loadSignals(sessionDate) {
   try {
     const rows = await getJson(`/predictions?session_date=${sessionDate}`);
     if (rows.length === 0) {
-      container.innerHTML = `<p class="note">No predictions for ${sessionDate}.</p>`;
+      const today = new Date().toLocaleDateString("en-CA");
+      container.innerHTML = sessionDate >= today
+        ? `<p class="note">No predictions for ${sessionDate} yet —
+             <a href="post.html">post yours</a> by 8:00 PM ET the prior trading day.</p>`
+        : `<p class="note">No predictions for ${sessionDate}.</p>`;
       return;
     }
     const body = rows.map(row => row.revealed
@@ -66,12 +70,14 @@ async function loadSignals(sessionDate) {
            <td>${row.ticker}</td>
            <td class="num">${row.entry_price}</td><td class="num">${row.stop_loss}</td><td class="num">${row.target_price}</td>
            <td>${row.status === "queued" ? "queued · settles overnight" : row.status}</td>
-           <td class="mono" title="commitment">${row.commitment.slice(0, 12)}…</td>
+           <td class="mono copyable" data-hash="${row.commitment}"
+               title="click to copy the full commitment">${row.commitment.slice(0, 12)}…</td>
          </tr>`
       : `<tr class="pending">
            <td>${identityLabel(row.identity_id, row.display_name)}</td>
            <td colspan="5">Reveals at 9:30 AM ET</td>
-           <td class="mono" title="commitment">${row.commitment.slice(0, 12)}…</td>
+           <td class="mono copyable" data-hash="${row.commitment}"
+               title="click to copy the full commitment">${row.commitment.slice(0, 12)}…</td>
          </tr>`
     ).join("");
     container.innerHTML = `
@@ -91,6 +97,16 @@ const picker = document.getElementById("session");
 picker.value = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 picker.addEventListener("change", () => loadSignals(picker.value));
 loadSignals(picker.value);
+
+// click a commitment to copy the full hash — verification starts with copying
+document.getElementById("signals").addEventListener("click", async (event) => {
+  const cell = event.target.closest(".copyable");
+  if (!cell) return;
+  try { await navigator.clipboard.writeText(cell.dataset.hash); } catch { return; }
+  const shown = cell.textContent;
+  cell.textContent = "copied ✓";
+  setTimeout(() => { cell.textContent = shown; }, 900);
+});
 
 getJson("/scoreboard")
   .then(board => {
