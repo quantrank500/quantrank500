@@ -77,16 +77,18 @@ def main() -> None:
         lake.execute(LAKE_SCHEMA)
         lake.commit()
     settle_everything_pending()  # self-heal on startup
-    scheduler = BlockingScheduler(timezone="America/New_York")
+    # timezone as a ZoneInfo object on scheduler AND triggers: a string here
+    # silently fell back to the container's UTC (found in prod logs, 2026-08-18)
+    scheduler = BlockingScheduler(timezone=ET)
     scheduler.add_job(
         settle_everything_pending,
-        CronTrigger(day_of_week="mon-fri", hour=17, minute=0),
+        CronTrigger(day_of_week="mon-fri", hour=17, minute=0, timezone=ET),
     )
     scheduler.add_job(
         # EQUS.MINI publishes yesterday's session after ~midnight ET;
         # the morning run settles what the evening run couldn't see yet
         settle_everything_pending,
-        CronTrigger(day_of_week="mon-fri", hour=8, minute=0),
+        CronTrigger(day_of_week="mon-fri", hour=8, minute=0, timezone=ET),
     )
     log.info("scheduled settlement runs, weekdays 17:00 + 08:00 ET")
     scheduler.start()
