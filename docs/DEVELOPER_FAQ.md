@@ -151,6 +151,21 @@ against exchange trade records anyone can buy.
    differ); the settling bar embedded in the settlement row shows exactly
    what the platform saw.
 
+## How do fills work at the open?
+
+Predictions are limit orders, and the engine honors real limit-order
+semantics (`src/quantrank500/engine/fill.py`): a touch of your entry price
+fills you, and if the session *opens* below your entry, you fill at the
+open — you never pay more than the market asks (gap improvement).
+
+That cuts both ways. The ledger's own prediction #1 is the canonical
+example: a limit at 11.13 on a stock that opened at 10.50 filled at
+10.50 — *below the plan's stop of 10.52*. Born underwater. The engine
+doesn't pretend a stop above your fill protects you: the position settled
+against the predictor at a real market price the same session. Ambiguity
+always resolves against the predictor — the record errs toward
+understatement, never flattery.
+
 ## What happens on halts or missing data?
 
 Settlement never fabricates. If an outcome can't be determined, the result
