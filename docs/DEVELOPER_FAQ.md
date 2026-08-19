@@ -160,6 +160,12 @@ replay any past session with identical results, and `catch_up` self-heals
 missed nights (`src/quantrank500/worker/nightly.py`). Determinism is a
 feature: the whole history is re-derivable.
 
+Cadence: the worker runs twice each weekday, but the run after midnight ET
+is the one that does the real work — a session's exchange records publish
+overnight, so outcomes land on the ledger before the next open. A
+prediction showing `queued` throughout its own session day is the normal
+state, not a stall.
+
 ## What can't the system prove?
 
 That a prediction was *tradeable*. Fills use a touch rule on a venue-blend

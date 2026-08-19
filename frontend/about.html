@@ -6,6 +6,8 @@
   <title>QuantRank500 — About</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
   <meta property="og:site_name" content="QuantRank500">
@@ -20,8 +22,8 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <nav>
-    <span class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle" style="fill:var(--bg,#ffffff)">Q</text></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></span>
-    <a href="index.html">Post</a>
+    <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><g transform="translate(18.351,44) scale(0.017578,-0.017578)"><path style="fill:var(--bg,#ffffff)" d="M770 -25Q462 -25 268 175Q74 377 74 698Q74 1037 271 1248Q467 1458 793 1458Q1100 1458 1289 1257Q1479 1057 1479 727Q1479 390 1282 182Q1275 175 1269.0 168.5Q1263 162 1256 156L1619 -193H1167L977 0Q883 -25 770 -25ZM784 1180Q615 1180 514 1052Q414 925 414 715Q414 502 514 378Q614 254 776 254Q943 254 1041 374Q1139 496 1139 709Q1139 931 1044 1056Q950 1180 784 1180Z"/></g></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></a>
+    <a href="post.html">Post</a>
     <a href="signals.html">Today's Signals</a>
     <a href="scoreboard.html">Scoreboard</a>
     <a href="quarterly.html">Quarterly 500</a>
@@ -56,9 +58,11 @@
   <h2>How it works</h2>
   <p>
     Lock a prediction tonight. It becomes a limit order at tomorrow's open. The
-    market fills it — or it expires unfilled. Both are recorded. Every evening,
-    the platform replays the session's trade records and settles every open
-    prediction. After 33 settled predictions, you appear on the scoreboard.
+    market fills it — or it expires unfilled. Both are recorded. Overnight,
+    once the exchange's records for the session are published, the platform
+    replays them and settles every open prediction — results appear by early
+    the next morning. After 33 settled predictions, you appear on the
+    scoreboard.
   </p>
 
   <h2>The Quarterly 500</h2>
@@ -100,7 +104,8 @@
   <p class="note">
     For developers and auditors: the API is documented in an
     <a id="api-docs-link" href="#">interactive reference</a> generated from the
-    running code. The platform code will be open-sourced at launch.
+    running code, and the platform code is
+    <a href="https://github.com/quantrank500/quantrank500">open source</a>.
   </p>
 </main>
 
