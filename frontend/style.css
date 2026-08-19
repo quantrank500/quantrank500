@@ -282,6 +282,12 @@ a { text-underline-offset: 3px; }
 }
 .skip:focus { left: 12px; }
 
+/* the story's one piece of evidence: a terminal crop, framed quietly */
+.story-receipt {
+  display: block; max-width: 100%; margin: 20px auto;
+  border: 1px solid var(--line); border-radius: 6px;
+}
+
 /* the maker's seal at the end of every page */
 .footer-seal { text-align: center; margin-bottom: 10px; }
 .footer-seal .mark { width: 16px; height: 16px; opacity: 0.55; }

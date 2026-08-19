@@ -154,6 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="strip-fresh"></div>
       <div>A record of predictions, not investment advice.</div>
       <div>Created by <a href="https://ruslandubas.com">Ruslan Dubas</a>
+        · <a href="story.html">Story</a>
         · <a href="https://github.com/quantrank500">Support this project</a>
         · <a href="glossary.html">Definitions</a>
         · <a href="faq.html">FAQ</a>
@@ -281,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
   links.className = "footer-links";
   links.innerHTML =
     `Created by <a href="https://ruslandubas.com">Ruslan Dubas</a>` +
+    ` · <a href="story.html">Story</a>` +
     ` · <a href="https://github.com/quantrank500">Support this project</a>` +
     ` · <a href="glossary.html">Definitions</a>` +
     ` · <a href="faq.html">FAQ</a>` +

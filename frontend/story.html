@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QuantRank500 — The Story</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#202124" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="QuantRank500">
+  <meta property="og:type" content="article">
+  <meta property="og:description"
+        content="An 84% win rate and still losing money — why QuantRank500 exists.">
+  <meta property="og:image" content="https://quantrank500.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="QuantRank500 — The Story">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <nav>
+    <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/><g transform="translate(18.351,44) scale(0.017578,-0.017578)"><path style="fill:var(--bg,#ffffff)" d="M770 -25Q462 -25 268 175Q74 377 74 698Q74 1037 271 1248Q467 1458 793 1458Q1100 1458 1289 1257Q1479 1057 1479 727Q1479 390 1282 182Q1275 175 1269.0 168.5Q1263 162 1256 156L1619 -193H1167L977 0Q883 -25 770 -25ZM784 1180Q615 1180 514 1052Q414 925 414 715Q414 502 514 378Q614 254 776 254Q943 254 1041 374Q1139 496 1139 709Q1139 931 1044 1056Q950 1180 784 1180Z"/></g></svg><span class="brand-text">QuantRank500<small>Est. 2026</small></span></a>
+    <a href="post.html">Post</a>
+    <a href="signals.html">Today's Signals</a>
+    <a href="scoreboard.html">Scoreboard</a>
+    <a href="quarterly.html">Quarterly 500</a>
+    <a href="profile.html">My Record</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main id="main" class="ruled">
+  <h1>The story</h1>
+  <p class="note">
+    Why this exists, from the person who built it. An 84% win rate and
+    still losing money.
+  </p>
+
+  <h2>It started with failing, repeatedly</h2>
+  <p>
+    A friend introduced me to prop trading firms — pass their evaluation,
+    trade their capital. I failed the tests. Not once: many times, and
+    always the same way. Emotional overtrading. I knew the rules; I broke
+    them anyway. The problem wasn't my analysis. It was my hands.
+  </p>
+  <p>
+    So I did what a developer does when the problem is human: I tried to
+    remove the human. I built a trading bot.
+  </p>
+
+  <h2>Seven months of humility</h2>
+  <p>
+    I expected the hard part to be code. It wasn't. Over seven months I
+    tried strategy after strategy before converging on something specific:
+    small-cap stocks, up to five days held, a 5.5% profit target, a 25%
+    stop loss. I funded a live account with $500 — a constraint that is
+    itself a challenge under the pattern day trader rule — and let the
+    machine trade.
+  </p>
+  <p>
+    Then the market taught me the lesson this whole site is about.
+  </p>
+
+  <h2>The math that humbles you</h2>
+  <p>
+    Win 5.5%, lose 25%: each loss erases about four and a half wins. The
+    breakeven win rate for that configuration is 25 ÷ (25 + 5.5) ≈
+    <strong>82%</strong>. My live account's win rate reached 83.9% — 99
+    winners out of 118 resolved trades — and the account was still down
+    from where it started.
+  </p>
+  <img class="story-receipt" src="story-receipt.png"
+       alt="Terminal output: win rate 83.9% (99/118), P&amp;L −$60">
+  <p>
+    An 84% win rate, underwater. That was the insight I couldn't unlearn:
+    <strong>win rate, alone, is close to meaningless.</strong> What matters
+    is win rate relative to what your win and loss sizes require — and
+    almost nobody who posts their results tells you the second number.
+  </p>
+
+  <h2>The record I wanted to read</h2>
+  <p>
+    Somewhere in month six, I went looking for signal providers worth
+    learning from. What I found was an industry of screenshots. Track
+    records that start after the losses. Winners posted, losers deleted.
+    There was no way to tell skill from survivorship — because nothing
+    prevented editing the past.
+  </p>
+  <p>
+    So I built the thing I couldn't find. Predictions locked before the
+    open, settled by the market, impossible to edit. Everyone competes with
+    the same simulated $500 — the stake I started with, because that number
+    keeps everyone honest about scale. And the scoreboard ranks by a
+    conservative bound on profit factor, not win rate — because I learned
+    the hard way what an 84% win rate is worth.
+  </p>
+
+  <h2>The first user is the machine that started all this</h2>
+  <p>
+    The ledger's first record — prediction #1 — was posted by my trading
+    bot, from the same signal engine that trades my live account. It was a
+    loss, settled honestly, permanent. That's the point. My record keeps me
+    honest here too.
+  </p>
+
+  <p class="note small-print">
+    Also published on <a href="https://medium.com/p/ffcc62a81131">Medium</a>.
+    A record of predictions, not investment advice.
+  </p>
+</main>
+
+<footer class="freshness" id="freshness"></footer>
+
+<script src="api.js"></script>
+<script>
+getJson("/scoreboard")
+  .then(board => renderFreshness(document.getElementById("freshness"), board.freshness))
+  .catch(() => {});
+</script>
+</body>
+</html>
