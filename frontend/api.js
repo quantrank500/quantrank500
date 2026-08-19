@@ -137,6 +137,11 @@ async function getJson(path) {
 // Theme: system preference by default; an explicit choice wins and persists.
 const savedTheme = localStorage.getItem("qr500_theme");
 if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+// ?theme=dark|light — a shareable themed link; wins for this view, never persists
+const urlTheme = new URLSearchParams(location.search).get("theme");
+if (urlTheme === "dark" || urlTheme === "light") {
+  document.documentElement.dataset.theme = urlTheme;
+}
 
 // The info strip: three fixed lines below the nav — status, statement, signature.
 // It sits OUTSIDE the sticky header and scrolls away; only the nav stays pinned.
@@ -152,6 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
         · <a href="https://github.com/quantrank500">Support this project</a>
         · <a href="glossary.html">Definitions</a>
         · <a href="faq.html">FAQ</a>
+        · <a href="https://github.com/quantrank500/quantrank500">Code</a>
+        · <a href="${API}/docs">APIs</a>
         · <a href="privacy.html">Privacy</a>${TRAFFIC_URL
           ? ` · <a href="${TRAFFIC_URL}">Traffic</a>` : ""}</div>
     </div>`;
@@ -259,8 +266,13 @@ document.addEventListener("DOMContentLoaded", () => {
   seal.innerHTML =
     '<svg class="mark" viewBox="0 0 64 64" aria-hidden="true">' +
     '<rect width="64" height="64" rx="14" style="fill:var(--ink,#202124)"/>' +
-    '<text x="32" y="44" font-size="36" font-weight="700" text-anchor="middle"' +
-    ' style="fill:var(--bg,#ffffff)">Q</text></svg>';
+    '<g transform="translate(18.351,44) scale(0.017578,-0.017578)">' +
+    '<path style="fill:var(--bg,#ffffff)" d="M770 -25Q462 -25 268 175Q74 377' +
+    ' 74 698Q74 1037 271 1248Q467 1458 793 1458Q1100 1458 1289 1257Q1479 1057' +
+    ' 1479 727Q1479 390 1282 182Q1275 175 1269.0 168.5Q1263 162 1256 156L1619' +
+    ' -193H1167L977 0Q883 -25 770 -25ZM784 1180Q615 1180 514 1052Q414 925 414' +
+    ' 715Q414 502 514 378Q614 254 776 254Q943 254 1041 374Q1139 496 1139 709' +
+    'Q1139 931 1044 1056Q950 1180 784 1180Z"/></g></svg>';
   footer.insertBefore(seal, identityLine);
 
   const links = document.createElement("div");
@@ -270,6 +282,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ` · <a href="https://github.com/quantrank500">Support this project</a>` +
     ` · <a href="glossary.html">Definitions</a>` +
     ` · <a href="faq.html">FAQ</a>` +
+    ` · <a href="https://github.com/quantrank500/quantrank500">Code</a>` +
+    ` · <a href="${API}/docs">APIs</a>` +
     ` · <a href="privacy.html">Privacy</a>` +
     (TRAFFIC_URL ? ` · <a href="${TRAFFIC_URL}">Traffic</a>` : "");
   footer.appendChild(links);
