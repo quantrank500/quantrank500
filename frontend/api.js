@@ -247,7 +247,9 @@ function identityLabel(id, name) {
 // Real supporters only — the "Supported by" strip renders only when non-empty.
 // Entries: { name, url }. An empty or aspirational sponsor wall is exactly the
 // sketchy signal this project refuses to send.
-const SUPPORTERS = [];
+const SUPPORTERS = [
+  { name: "Ruslan Dubas", url: "https://ruslandubas.com" },
+];
 
 // The site footer: freshness line, then credit + support links, then (dormant)
 // the supporters strip. Injected once here so all pages stay identical.
